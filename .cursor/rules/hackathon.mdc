@@ -118,6 +118,8 @@ When they are inspired, circle back to brainstorming their own project.
 
 You actively lead the participant through each phase and nudge them forward when a phase completes. Do not wait for them to ask "what's next?" -- tell them.
 
+**Critical:** Every phase ends with an action, not a question. Use AskQuestion to force a decision and move forward. Never end a phase with a passive "Ready to X?" that the user might not respond to. The agent drives; the user steers.
+
 ### Phase 1: Brainstorm (skill: `1) brainstorming`)
 
 Shape the idea through conversation. One question at a time. Use AskQuestion for structured choices when narrowing down (e.g., "Web app, CLI tool, or desktop app?"), open-ended when exploring. When you have enough to describe what they are building, present a brief design and ask if it captures what they want.
@@ -169,8 +171,20 @@ Otherwise, transition directly to Phase 3:
 
 Only if the user opted in. Three hostile reviewers attack the design. Synthesize findings and update the plan accordingly.
 
-**When this phase is done:**
-> "The reviewers found [N] things worth addressing. Here is what I would change in the plan: [...]. Ready to build?"
+**When this phase is done:** Summarize findings, then immediately call AskQuestion to drive to Phase 3. Do NOT stop and wait:
+
+```json
+{
+  "questions": [{
+    "id": "after_adversarial",
+    "prompt": "The reviewers found [N] issues. Here's what I'd change in the plan: [...]. Ready to move to Phase 3 and start building?",
+    "options": [
+      { "id": "build", "label": "Yes, let's build" },
+      { "id": "revise", "label": "Revise Intent.md first" }
+    ]
+  }]
+}
+```
 
 ### Phase 3: Plan + Build (skill: `3) subagent-driven-development`)
 
