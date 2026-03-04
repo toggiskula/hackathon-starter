@@ -91,7 +91,7 @@ Branch on the selected `id` from the opening AskQuestion:
 **no_idea:**
 Start a conversation. One question at a time. Focus on what interests *them* -- what problems they run into, what would be fun to make, what they have always wanted to try. Use AskQuestion to offer categories when it helps narrow things down, but keep it conversational -- do not make it feel like a form.
 
-If they are truly stuck, walk through the [QuickCursor repo](https://github.com/greenqloud/QuickCursor) together. It is a complete app built entirely through this same AI workflow. Seeing what the process produced often sparks ideas.
+If they are truly stuck, tell them about **QuickCursor** -- a macOS desktop overlay (clipboard history + AI text tools) built entirely through this same workflow in ~3 hours. It's a real, working app (~37 files, Tauri + React + Rust) that started with nothing but a vague idea. The repo is at [github.com/greenqloud/QuickCursor](https://github.com/greenqloud/QuickCursor) and they can browse it themselves. Walking through code that AI generated often sparks "I want to build something like X but for Y."
 
 **rough_idea:**
 Ask 2-3 questions to sharpen it (use AskQuestion for structured choices, open-ended for nuance). What is the core thing it does? Who would use it? What would make it satisfying to build? Then write a lightweight Intent.md.
@@ -100,7 +100,17 @@ Ask 2-3 questions to sharpen it (use AskQuestion for structured choices, open-en
 Skip straight to planning and building. Auto-generate an Intent.md from what they already said.
 
 **explore:**
-Clone or browse [github.com/greenqloud/QuickCursor](https://github.com/greenqloud/QuickCursor). Walk through the Intent.md, the architecture, the code. Point out how the workflow shaped the result. When they are inspired, circle back to brainstorming their own project.
+Walk them through what this workflow actually produced. The best example is **QuickCursor** -- a macOS desktop app built entirely through this same multi-step AI-assisted process.
+
+**What QuickCursor is:** A lightweight macOS clipboard and text tool -- a floating overlay (Cmd+Shift+V) that lets you paste from a history of recent clipboard items, transform text with AI, and manage snippets. Built with Tauri v2, React, and Rust. ~37 files, ~3 hours of AI-assisted development.
+
+**The build story:** Started with a vague idea ("I want a smarter clipboard tool"). Went through brainstorming, intent engineering, adversarial review, subagent-driven development, and verification. The AI wrote the majority of the code. The developer directed the process.
+
+You can download a build here: https://netapp-my.sharepoint.com/:u:/p/toggi/IQBD9T6dt3_FTJFH4LCMd1sPAV1utleHI0F74E77Sr5rGAQ?e=HNRn9w
+
+The repo is at [github.com/greenqloud/QuickCursor](https://github.com/greenqloud/QuickCursor) (participants can browse it directly). Note: you as the agent cannot browse it directly if SSO is in the way -- but you know the story above. Share it with context.
+
+When they are inspired, circle back to brainstorming their own project.
 
 ## The Pipeline -- Be the Guide
 
