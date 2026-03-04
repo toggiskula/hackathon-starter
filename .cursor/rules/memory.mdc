@@ -8,36 +8,48 @@ Updated: 2026-03-04
 
 ## State
 
-- Fresh starter repo -- no project built yet, blank canvas
-- All AI workflow skills are pre-installed and numbered by order of use
-- No Intent.md exists -- the person opening this repo has not started yet
+- Starter repo is production-ready and pushed to `github.com/toggiskula/hackathon-starter`
+- All AI workflow skills pre-installed and numbered by order of use
+- Pipeline is fully wired with AskQuestion transitions between every phase
+- No Intent.md exists -- the next person opening this repo starts fresh
 
 ## What You Should Do
 
-Someone just opened this repo. They want to build something, or at least explore what is possible with AI-assisted development. Your job:
+Someone just opened this repo. Welcome them, find out where they are, and lead them through the workflow. The pipeline is:
 
-1. Welcome them -- keep it warm, not formal
-2. Find out where they are -- do they have an idea, a rough direction, or nothing at all?
-3. Meet them there -- if they know what they want, start building. If they are exploring, help them discover what excites them.
-4. Respect their pace -- if they want to skip steps or jump ahead, let them.
+1. **Brainstorm** -- one question at a time, shape the idea
+2. **Intent.md** -- 5-10 lines: what, why, constraints. Save to `Intent.md` in root.
+3. **Write Plan** -- 2-4 tasks saved to `docs/plans/YYYY-MM-DD-<feature>.md` (use superpowers:writing-plans with hackathon overrides)
+4. **Adversarial Review** -- optional, only if complex + 30+ min remain. Attacks the plan.
+5. **Build + Review** -- subagent per task, two-stage review (spec compliance then code quality) after each
+6. **Polish** -- code-simplifier skill
+7. **Verify** -- verification-before-completion skill, run the thing, prove it works
 
-If they have **no idea at all**, suggest exploring the [QuickCursor repo](https://github.com/greenqloud/QuickCursor) together. It is a complete app (Tauri, React, Rust) built entirely through this same multi-step AI workflow. Walking through it shows what the process produces and often sparks ideas.
+**Every phase ends with AskQuestion -- never a passive question. You drive; the user steers.**
+
+If they have no idea, tell them about QuickCursor: a macOS floating panel (Cmd+Shift+R) that wraps cursor-agent with a markdown knowledge vault. Tauri v2 + React + Rust. Built with this exact workflow. Repo: github.com/greenqloud/QuickCursor (SSO may block you as agent; participants can browse it directly).
 
 ## Context
 
-- Skills are numbered 1-5 by workflow order for discoverability
-- Intent.md is lightweight (5-10 lines), not a specification
-- Adversarial review is optional (time-permitting)
-- Escape hatch: user can skip any step at any time
-- frontend-design skill available (unnumbered) for web UI projects
-- Download skills.html in .cursor/skills/ has more skills to install
+- `hackathon.mdc` overrides skill hard gates: lighter intent (5-10 lines not 100+), no landscape research, no design docs, 2-4 task plans only, adversarial review optional
+- Escape hatch: user can skip any step. "Just build it" = build it.
+- `/skills` command shows the full skills table with invocation phrases
+- `/memorize` for thorough checkpoint; memory also auto-updates on every file edit
+- `Download skills.html` in `.cursor/skills/` links to the full shared skills library
+- Time limit: ~1 hour. If 15+ min on brainstorm/intent, wrap up and start building.
 
 ## Decisions
 
-(none yet -- this is a fresh start)
+- Pipeline: Intent -> Write Plan -> Adversarial Review (optional) -> Build+Review -> Polish -> Verify
+- Adversarial review attacks the **plan**, not just the design
+- Two-stage review (spec compliance + code quality) is built into subagent-driven-development skill -- do not skip
+- AskQuestion used at every phase transition, not passive text questions
+- QuickCursor = headless Cursor + knowledge base, NOT a clipboard tool
+- memory.mdc (this file) is the sole memory mechanism -- no root handoff files, no hooks
 
 ## Warnings
 
-- This is meant to be a short session. Do not spend more than 15 minutes on brainstorming/intent.
-- The hackathon.mdc rule overrides some skill behaviors (lighter intent, no design docs, no landscape research). Trust the rule.
-- If the user says "just build it", build it. Do not gate on process.
+- Do NOT use a stop hook for memory -- it fires after every agent response and breaks AskQuestion flow
+- The brainstorming skill has a 6-step hard gate -- the hackathon.mdc rule overrides it. Trust the rule.
+- writing-plans skill saves to `docs/plans/` -- do NOT save design docs there for hackathon projects
+- If user says "just build it", skip intent/plan entirely and auto-generate both from context
