@@ -72,4 +72,4 @@ Want more skills? Open `Download skills.html` in `.cursor/skills/` to browse and
 
 ## Memory
 
-This repo has a lightweight memory system. The agent reads `HANDOFF.md` at the start of each session to orient itself. At the end, type `/handoff` to save state -- useful if you want to continue later or pass the project to someone else.
+This repo has a lightweight memory system built on Cursor's rules. The agent automatically sees session state via `.cursor/rules/handoff.mdc` and `.cursor/rules/hot-context.mdc` -- no manual file reading needed. At the end of a session, type `/handoff` to save progress so the next session picks up where you left off.

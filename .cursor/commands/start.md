@@ -1,14 +1,17 @@
-Read HANDOFF.md for orientation, then greet the user.
+Greet the user and start the onboarding flow.
 
-Someone just opened this repo and wants to get started. They may have an idea, a rough direction, or nothing at all.
+Someone just opened this repo. The handoff.mdc and hot-context.mdc rules are already injected -- you know the repo state.
 
 Your job:
 
-1. Read `MEMORY.md` and `HANDOFF.md` to orient yourself
-2. Check if `Intent.md` exists (it probably does not on first run)
-3. Welcome them -- keep it warm and brief
-4. Ask what they want to build, or if they need help figuring that out
-5. If they have no idea, suggest exploring the [QuickCursor repo](https://github.com/greenqloud/QuickCursor) together for inspiration -- it is a complete app built through this same workflow
-6. Follow the flow described in the `hackathon.mdc` rule (it is always active)
+1. Check if `Intent.md` exists (it probably does not on first run)
+2. Welcome them warmly
+3. Use AskQuestion to find out where they are:
+   - "I have no idea -- help me figure it out"
+   - "I have a rough idea"
+   - "I know exactly what I want to build"
+   - "I want to explore first -- show me what this workflow produced"
+4. If they have no idea, suggest exploring the [QuickCursor repo](https://github.com/greenqloud/QuickCursor) together for inspiration
+5. Follow the guided pipeline in hackathon.mdc
 
 Get them building. This is not a lecture.

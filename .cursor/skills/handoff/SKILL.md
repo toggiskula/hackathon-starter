@@ -6,11 +6,12 @@ description: Save session state before context is cleared. Writes shift-change n
 # /handoff -- Session State Handoff
 
 You are writing notes for your future self. That future self will wake up with no
-memory of this conversation. Make these notes count.
+memory of this conversation. But it WILL automatically see the `.cursor/rules/` files.
+Make these notes count.
 
-## Step 1: Write HANDOFF.md
+## Step 1: Update handoff.mdc
 
-Update `HANDOFF.md` in the project root with the 5-layer structure:
+Rewrite `.cursor/rules/handoff.mdc` with the 5-layer structure:
 
 - **State** -- what exists now (project status, what is built, what is broken)
 - **Story** -- 2-3 sentence narrative of what happened this session
@@ -18,17 +19,21 @@ Update `HANDOFF.md` in the project root with the 5-layer structure:
 - **Next** -- what the next session should do first
 - **Warnings** -- gotchas, blockers, things that will bite the next person
 
-Be specific. Your future self has ZERO context.
+Keep the `alwaysApply: true` frontmatter. Be specific. Your future self has ZERO context
+beyond what these rules inject.
 
-## Step 2: Update HOT_CONTEXT.md
+## Step 2: Update hot-context.mdc
 
-Rewrite `HOT_CONTEXT.md` in the project root with the current top 5-10 items.
+Rewrite `.cursor/rules/hot-context.mdc` with the current top 5-10 items.
 Remove stale items. Add new ones. This is working memory -- what matters RIGHT NOW.
+
+Keep the `alwaysApply: true` frontmatter.
 
 ## Step 3: Update NARRATIVE.md (only if significant)
 
-Append to `NARRATIVE.md` if something significant happened: a breakthrough,
-an architectural decision, a new phase, or a lesson learned. Skip for routine work.
+Append to `NARRATIVE.md` in the project root if something significant happened:
+a breakthrough, an architectural decision, a new phase, or a lesson learned.
+Skip for routine work.
 
 ## Step 4: Confirm
 
