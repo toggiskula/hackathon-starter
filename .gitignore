@@ -9,3 +9,7 @@ target/
 __pycache__/
 *.pyc
 .vscode/
+
+# Created during hackathon sessions (not committed)
+Intent.md
+docs/plans/

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Skills - Pick Your Tools</title>
+    <style>
+        :root {
+            --bg: #1a1c24;
+            --surface: #21232d;
+            --border: #2e3140;
+            --text: #d8dae0;
+            --text-dim: #7c7f8e;
+            --accent: #3ecf8e;
+            --accent-dim: rgba(62, 207, 142, 0.10);
+            --accent-hover: rgba(62, 207, 142, 0.18);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page {
+            max-width: 1100px;
+            width: 100%;
+            padding: 2.5rem 2rem 2rem;
+        }
+
+        /* Step labels */
+        .step {
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.6rem;
+            color: var(--text);
+        }
+
+        .step em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        /* Grid of categories */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 1.5rem 2.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .cat-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text);
+            padding-bottom: 0.45rem;
+            margin-bottom: 0.3rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .cat-title:hover { color: var(--accent); }
+
+        /* Individual skill row */
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.22rem 0;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        .item:hover .item-name { color: #fff; }
+
+        .item input { display: none; }
+
+        .box {
+            width: 15px;
+            height: 15px;
+            min-width: 15px;
+            border: 1.5px solid #444960;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+        }
+
+        .item.on .box {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .item.on .box::after {
+            content: "";
+            width: 4px;
+            height: 7px;
+            border: solid var(--bg);
+            border-width: 0 1.8px 1.8px 0;
+            transform: rotate(45deg) translate(-0.5px, -0.5px);
+        }
+
+        .item-name {
+            font-size: 0.84rem;
+            line-height: 1.35;
+            color: var(--text);
+            transition: color 0.08s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Tooltip on hover */
+        .item .tip {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            z-index: 50;
+            background: #2a2d3a;
+            color: var(--text);
+            font-size: 0.76rem;
+            line-height: 1.4;
+            padding: 0.4rem 0.6rem;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            white-space: normal;
+            width: max-content;
+            max-width: 260px;
+            pointer-events: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+        }
+
+        .item:hover .tip { display: block; }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0 0 1.8rem;
+        }
+
+        /* Bottom action area */
+        .action-area {
+            text-align: center;
+            padding-bottom: 2rem;
+        }
+
+        .action-area .step { margin-bottom: 1rem; }
+
+        .get-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2.4rem;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            letter-spacing: -0.01em;
+        }
+
+        .get-btn:hover { background: #35c182; transform: translateY(-1px); }
+        .get-btn:active { transform: translateY(0); }
+        .get-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+        .get-btn.copied { background: #6366f1; }
+
+        .btn-count {
+            font-weight: 400;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .select-all-link {
+            display: inline-block;
+            margin-top: 0.6rem;
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .select-all-link:hover { color: var(--accent); }
+
+        /* Command modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 650px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modal-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+
+        .modal-btn:hover { background: rgba(255,255,255,0.06); }
+
+        .modal-btn.primary {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .modal-btn.primary:hover { background: #35c182; }
+        .modal-btn.primary.copied { background: #6366f1; border-color: #6366f1; }
+
+        .command-block {
+            background: #141620;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .command-block .cmd { color: var(--accent); }
+        .command-block .comment { color: #555; }
+        .command-block .path { color: #e4a853; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 1rem 0 2rem;
+        }
+
+        .footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.12s;
+        }
+
+        .footer a:hover { color: var(--text); }
+        .footer svg { width: 15px; height: 15px; fill: currentColor; }
+
+        @media (max-width: 700px) {
+            .page { padding: 1.5rem 1rem; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 1.2rem 1.4rem; }
+        }
+
+        @media (max-width: 440px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <p class="step">1. Pick the <em>skills</em> you want</p>
+
+    <div class="grid" id="grid"></div>
+
+    <hr class="divider">
+
+    <div class="action-area">
+        <p class="step">2. Copy and run the install command</p>
+        <button class="get-btn" id="getBtn" onclick="showCommand()" disabled>
+            Get Your Skills
+        </button>
+        <br>
+        <span class="select-all-link" id="selectAllLink" onclick="toggleAll()">or select everything</span>
+    </div>
+
+    <div class="footer">
+        <a href="https://github.com/greenqloud/shared-skills">
+            <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            greenqloud/shared-skills
+        </a>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <span class="modal-title">Install command</span>
+            <div class="modal-actions">
+                <button class="modal-btn" onclick="closeModal()">Close</button>
+                <button class="modal-btn primary" id="copyBtn" onclick="copyCommand()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    Copy
+                </button>
+            </div>
+        </div>
+        <div class="command-block" id="commandBlock"></div>
+    </div>
+</div>
+
+<script>
+const REPO = "https://github.com/greenqloud/shared-skills.git";
+const DEST = "~/shared-skills";
+
+const catalog = [
+    {
+        id: "planning",
+        name: "Planning",
+        skills: [
+            { id: "vision-to-execution", label: "Vision to Execution", desc: "The full pipeline: brainstorm, intent, plan, build, verify" },
+            { id: "brainstorming", label: "Brainstorming", desc: "AI interviews you to clarify what you actually want before building" },
+            { id: "intent-engineering", label: "Intent Engineering", desc: "Produce a structured Intent.md: what, why, constraints, success criteria" },
+            { id: "writing-plans", label: "Implementation Plan", desc: "Break the intent into concrete steps before touching code" },
+            { id: "adversarial-review", label: "Adversarial Review", desc: "3 hostile agents attack your plan before you invest time building" },
+        ]
+    },
+    {
+        id: "development",
+        name: "Building",
+        skills: [
+            { id: "subagent-driven-development", label: "Subagent Pipeline", desc: "Fresh agent per task with spec review + quality review gates" },
+            { id: "dispatching-parallel-agents", label: "Parallel Agents", desc: "Fan out 2+ independent problems to agents that run simultaneously" },
+            { id: "executing-plans", label: "Execute Plan", desc: "Pick up a plan in a new session and work through it with checkpoints" },
+            { id: "test-driven-development", label: "Test-Driven Dev", desc: "Write failing tests first, then make them pass" },
+            { id: "systematic-debugging", label: "Systematic Debugging", desc: "Investigate with evidence before proposing fixes" },
+        ]
+    },
+    {
+        id: "quality",
+        name: "Quality",
+        skills: [
+            { id: "code-simplifier", label: "Code Simplifier", desc: "Clean up code for clarity without changing behavior" },
+            { id: "requesting-code-review", label: "Request Review", desc: "Have the agent verify your work meets requirements" },
+            { id: "receiving-code-review", label: "Handle Feedback", desc: "Process review comments with rigor, not blind agreement" },
+            { id: "verification-before-completion", label: "Verify Before Done", desc: "Require evidence that it works before claiming success" },
+            { id: "squidward", label: "Squidward", desc: "Grumpy, thorough PR reviewer: 3 parallel agents rip apart your code with the personality of Squidward Tentacles" },
+        ]
+    },
+    {
+        id: "git",
+        name: "Git & Shipping",
+        skills: [
+            { id: "using-git-worktrees", label: "Git Worktrees", desc: "Isolated workspaces for parallel feature branches" },
+            { id: "finishing-a-development-branch", label: "Ship a Branch", desc: "Merge, PR, or clean up when implementation is done" },
+        ]
+    },
+    {
+        id: "tooling",
+        name: "Tooling",
+        skills: [
+            { id: "slides-designer", label: "HTML Presentations", desc: "Generate rich slide decks as single HTML files, no dependencies" },
+            { id: "writing-skills", label: "Skill Authoring", desc: "Create or edit reusable Cursor agent skills" },
+        ]
+    },
+    {
+        id: "setup",
+        name: "Setup",
+        skills: [
+            { id: "using-superpowers", label: "Skill Loader", desc: "Auto-discovers and applies relevant skills every conversation" },
+            { id: "add-folder-to-workspace", label: "Workspace Onboarding", desc: "Agent configures repos, skills, and tools in your workspace" },
+            { id: "mcp-github", label: "GitHub Tools", desc: "Connect Cursor to GitHub for issues, PRs, and repo access" },
+            { id: "mcp-jira-confluence", label: "Jira & Confluence", desc: "Connect Cursor to Jira and Confluence for project context" },
+            { id: "setup-agentic-layer", label: "Agentic Layer", desc: "Install shared knowledge rules into your project" },
+            { id: "memory-v6-setup", label: "Memory Layer", desc: "Persistent knowledge that survives across sessions" },
+        ]
+    }
+];
+
+const selected = new Set();
+
+function render() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = catalog.map(cat => `
+        <div>
+            <div class="cat-title" onclick="toggleCategory('${cat.id}')">${cat.name}</div>
+            ${cat.skills.map(s => {
+                const key = `${cat.id}/${s.id}`;
+                const on = selected.has(key);
+                return `
+                <label class="item ${on ? 'on' : ''}" onclick="event.preventDefault(); toggleSkill('${key}')">
+                    <input type="checkbox" ${on ? 'checked' : ''}>
+                    <div class="box"></div>
+                    <span class="item-name">${s.label}</span>
+                    <span class="tip">${s.desc}</span>
+                </label>`;
+            }).join("")}
+        </div>
+    `).join("");
+
+    updateBtn();
+}
+
+function toggleSkill(key) {
+    if (selected.has(key)) selected.delete(key);
+    else selected.add(key);
+    render();
+}
+
+function toggleCategory(catId) {
+    const cat = catalog.find(c => c.id === catId);
+    const full = cat.skills.every(s => selected.has(`${catId}/${s.id}`));
+    cat.skills.forEach(s => {
+        const key = `${catId}/${s.id}`;
+        if (full) selected.delete(key);
+        else selected.add(key);
+    });
+    render();
+}
+
+function toggleAll() {
+    const allKeys = catalog.flatMap(c => c.skills.map(s => `${c.id}/${s.id}`));
+    const allSelected = allKeys.every(k => selected.has(k));
+    if (allSelected) selected.clear();
+    else allKeys.forEach(k => selected.add(k));
+    render();
+}
+
+function updateBtn() {
+    const btn = document.getElementById("getBtn");
+    const link = document.getElementById("selectAllLink");
+    const allKeys = catalog.flatMap(c => c.skills.map(s => `${c.id}/${s.id}`));
+    const allSelected = allKeys.every(k => selected.has(k));
+
+    btn.disabled = selected.size === 0;
+
+    if (selected.size === 0) {
+        btn.innerHTML = "Get Your Skills";
+    } else if (allSelected) {
+        btn.innerHTML = `Get Your Skills <span class="btn-count">(all ${allKeys.length})</span>`;
+    } else {
+        btn.innerHTML = `Get Your Skills <span class="btn-count">(${selected.size})</span>`;
+    }
+
+    link.textContent = allSelected ? "deselect all" : "or select everything";
+}
+
+function isCategoryFullySelected(cat) {
+    return cat.skills.every(s => selected.has(`${cat.id}/${s.id}`));
+}
+
+function showCommand() {
+    if (selected.size === 0) return;
+    const block = document.getElementById("commandBlock");
+    const allKeys = catalog.flatMap(c => c.skills.map(s => `${c.id}/${s.id}`));
+    const allSelected = allKeys.every(k => selected.has(k));
+
+    if (allSelected) {
+        block.innerHTML = buildFullClone();
+    } else {
+        const fullCats = [];
+        const individualSkills = [];
+        catalog.forEach(cat => {
+            if (isCategoryFullySelected(cat)) {
+                fullCats.push(cat.id);
+            } else {
+                cat.skills.forEach(s => {
+                    if (selected.has(`${cat.id}/${s.id}`)) {
+                        individualSkills.push(`${cat.id}/${s.id}`);
+                    }
+                });
+            }
+        });
+        const paths = [
+            ...fullCats.map(c => `.cursor/skills/${c}`),
+            ...individualSkills.map(s => `.cursor/skills/${s}`)
+        ];
+        block.innerHTML = buildSparseCheckout(paths);
+    }
+
+    document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(e) {
+    if (!e || e.target === document.getElementById("modal")) {
+        document.getElementById("modal").classList.remove("show");
+    }
+}
+
+function buildFullClone() {
+    return [
+        `<span class="comment"># Clone everything</span>`,
+        `<span class="cmd">git clone</span> <span class="path">${REPO}</span> ${DEST}`,
+        `<span class="cmd">cursor --add</span> ${DEST}`,
+    ].join("\n");
+}
+
+function buildSparseCheckout(paths) {
+    const pathsStr = paths.map(p => `<span class="path">${p}</span>`).join(" \\\n  ");
+    return [
+        `<span class="comment"># Clone without checking out files</span>`,
+        `<span class="cmd">git clone</span> --no-checkout <span class="path">${REPO}</span> ${DEST}`,
+        `<span class="cmd">cd</span> ${DEST}`,
+        ``,
+        `<span class="comment"># Pick your skills</span>`,
+        `<span class="cmd">git sparse-checkout</span> init --cone`,
+        `<span class="cmd">git sparse-checkout</span> set ${pathsStr}`,
+        `<span class="cmd">git checkout</span> main`,
+        ``,
+        `<span class="comment"># Add to Cursor workspace</span>`,
+        `<span class="cmd">cursor --add</span> ${DEST}`,
+    ].join("\n");
+}
+
+function getPlainCommand() {
+    const allKeys = catalog.flatMap(c => c.skills.map(s => `${c.id}/${s.id}`));
+    const allSelected = allKeys.every(k => selected.has(k));
+
+    if (allSelected) {
+        return `git clone ${REPO} ${DEST}\ncursor --add ${DEST}`;
+    }
+
+    const fullCats = [];
+    const individualSkills = [];
+    catalog.forEach(cat => {
+        if (isCategoryFullySelected(cat)) {
+            fullCats.push(cat.id);
+        } else {
+            cat.skills.forEach(s => {
+                if (selected.has(`${cat.id}/${s.id}`)) {
+                    individualSkills.push(`${cat.id}/${s.id}`);
+                }
+            });
+        }
+    });
+
+    const paths = [
+        ...fullCats.map(c => `.cursor/skills/${c}`),
+        ...individualSkills.map(s => `.cursor/skills/${s}`)
+    ].join(" \\\n  ");
+
+    return [
+        `git clone --no-checkout ${REPO} ${DEST}`,
+        `cd ${DEST}`,
+        `git sparse-checkout init --cone`,
+        `git sparse-checkout set ${paths}`,
+        `git checkout main`,
+        `cursor --add ${DEST}`
+    ].join("\n");
+}
+
+function copyCommand() {
+    const text = getPlainCommand();
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Copied!`;
+        btn.classList.add("copied");
+        setTimeout(() => {
+            btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`;
+            btn.classList.remove("copied");
+        }, 2000);
+    });
+}
+
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal(null) || true;
+});
+
+render();
+</script>
+
+</body>
+</html>

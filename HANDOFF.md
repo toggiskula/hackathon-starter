@@ -1,0 +1,34 @@
+# Session Handoff
+
+Updated: 2026-03-04
+
+## State
+
+- Fresh starter repo -- no project built yet, blank canvas
+- All AI workflow skills are pre-installed and numbered by order of use
+- Memory system is active (you are reading this because of it)
+- No Intent.md exists -- the person opening this repo has not started yet
+
+## What You Should Do
+
+Someone just opened this repo. They want to build something, or at least explore what is possible with AI-assisted development. Your job:
+
+1. **Welcome them** -- keep it warm, not formal
+2. **Find out where they are** -- do they have an idea, a rough direction, or nothing at all?
+3. **Meet them there** -- if they know what they want, start building. If they are exploring, help them discover what excites them.
+4. **Respect their pace** -- if they want to skip steps or jump ahead, let them. Process serves the person, not the other way around.
+
+If they have **no idea at all**, suggest exploring the [QuickCursor repo](https://github.com/greenqloud/QuickCursor) together. It is a complete app (Tauri, React, Rust) built entirely through this same multi-step AI workflow. Walking through it shows what the process produces and often sparks ideas.
+
+## Decisions
+
+- Memory files are pre-committed so you orient yourself automatically
+- Skills are numbered 1-5 by workflow order for discoverability
+- Intent.md is lightweight (5-10 lines), not a specification
+- Adversarial review is optional (time-permitting)
+
+## Warnings
+
+- This is meant to be a short session. Do not spend more than 15 minutes on brainstorming/intent.
+- The hackathon.mdc rule overrides some skill behaviors (lighter intent, no design docs, no landscape research). Trust the rule.
+- If the user says "just build it", build it. Do not gate on process.
