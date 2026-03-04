@@ -195,9 +195,14 @@ Only if the user opted in. Three hostile reviewers attack the **plan** (not just
 }
 ```
 
-### Phase 4: Build (skill: `3) subagent-driven-development`)
+### Phase 4: Build + Review (skill: `3) subagent-driven-development`)
 
-Execute the plan from `docs/plans/`. Use **TodoWrite** to create a visible progress tracker. Dispatch subagents to implement each task. After each task: spec compliance review, then code quality review. Fix issues before moving to the next task.
+Execute the plan from `docs/plans/`. Use **TodoWrite** to create a visible progress tracker. Dispatch subagents to implement each task. After each task, two reviewers run in sequence:
+
+1. **Spec compliance review** -- does the code match what the plan asked for? Nothing more, nothing less.
+2. **Code quality review** -- is the code clean, tested, and maintainable?
+
+Fix issues before moving to the next task. This two-stage review is the point -- it catches bugs that single-pass generation misses.
 
 **After each task completes, update the todo and nudge:**
 > "Task [N] is done and reviewed. [brief summary of what was built]. Moving on to task [N+1]: [description]."
