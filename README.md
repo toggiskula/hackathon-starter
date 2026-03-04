@@ -58,7 +58,7 @@ Pre-installed AI workflow skills in `.cursor/skills/`, numbered by the order you
 | 4 | **code-simplifier** | Refines AI-generated code for clarity and quality |
 | 5 | **verification-before-completion** | Proves the code works before claiming done |
 | -- | **frontend-design** | Production-grade web UI components (use as needed) |
-| -- | **handoff** | Saves session state so your next session picks up where you left off |
+| -- | **memorize** | Thorough memory checkpoint (optional -- memory auto-updates) |
 
 Want more skills? Open `Download skills.html` in `.cursor/skills/` to browse and install from the shared library.
 
@@ -72,7 +72,7 @@ Want more skills? Open `Download skills.html` in `.cursor/skills/` to browse and
 
 ## Memory
 
-This repo has a lightweight memory system built on Cursor's rules. The agent automatically sees session state via `.cursor/rules/handoff.mdc` and `.cursor/rules/hot-context.mdc` -- no manual file reading needed. At the end of a session, type `/handoff` to save progress so the next session picks up where you left off.
+This repo has automatic session memory. A `stop` hook fires after each agent turn and updates `.cursor/rules/memory.mdc` whenever meaningful work happens -- no manual saving needed. The agent sees this file automatically every session. For a thorough checkpoint, type `/memorize`, but even without it, the next session will know what you built.
 
 ## Expand Your Workspace
 

@@ -1,127 +1,146 @@
 ---
 name: session-memory
-description: Install session memory -- a lightweight continuity system so the agent remembers what happened between sessions. Creates handoff files and working memory with zero dependencies.
+description: Install session memory -- a lightweight continuity system so the agent remembers what happened between sessions. Uses a single .cursor/rules/memory.mdc file (auto-injected by Cursor) plus a stop hook that keeps it current. Zero manual saving required.
 ---
 
 # Session Memory Setup
 
-You are installing session memory into this codebase. This solves the "amnesia problem" -- AI agents lose all context between sessions. Session memory gives you: shift-change notes, working memory, narrative history, and a Stop hook that reminds you to save state before context is cleared.
+You are installing session memory into this codebase. This solves the "amnesia problem" -- AI agents lose all context between sessions.
 
-**Analogy for the user:** Imagine hiring someone who gets amnesia every night. Every morning they show up to your workshop with zero memory of yesterday. Session memory is the set of notes their yesterday-self leaves them so they can start working immediately instead of spending the first hour asking "what was I doing?"
+**How it works:**
+1. Cursor automatically injects `.cursor/rules/memory.mdc` (with `alwaysApply: true`) into every conversation -- the agent sees project state without reading any files.
+2. A `stop` hook fires after each agent turn. If meaningful work was done, the agent silently updates `memory.mdc`. No user action needed.
+3. `/memorize` is available as an optional thorough save. But automatic updates mean memory stays current even without it.
 
 ---
 
 ## What Gets Installed
 
-| File | Analogy | Purpose |
-|------|---------|---------|
-| **MEMORY.md** | The note on the fridge | Auto-loaded index that says "read HANDOFF.md first" |
-| **HANDOFF.md** | Letter from yesterday's you | 5-layer shift-change notes: state, story, decisions, priorities, warnings |
-| **HOT_CONTEXT.md** | Pinboard above your desk | Top 5-10 things that matter RIGHT NOW. Small on purpose. |
-| **NARRATIVE.md** | Project journal | The story -- not what happened, but why it mattered |
-| **/handoff skill** | The act of writing the letter | Guides agent through saving all session state |
+| File | Purpose |
+|------|---------|
+| `.cursor/rules/memory.mdc` | Session state: what exists, what to do, decisions, warnings. Auto-injected every session, auto-updated by stop hook. |
+| `.cursor/hooks.json` | Configures the stop hook that triggers memory checks. |
+| `.cursor/hooks/memory-update.sh` | The hook script: asks the agent to update memory.mdc if meaningful work happened. |
+| `NARRATIVE.md` (root) | Project journal -- the story over time. Read on demand, not auto-injected. |
+| `.cursor/skills/memorize/SKILL.md` | Optional thorough save skill. |
+| `.cursor/commands/memorize.md` | `/memorize` command entry point. |
 
 ---
 
 ## Installation
 
-### Step 1: Create MEMORY.md
+### Step 1: Create memory.mdc
 
-Create `MEMORY.md` in the project root:
+Create `.cursor/rules/memory.mdc`:
 
-```markdown
-# [Project Name] -- Session memory
-
-## SESSION START PROTOCOL
-1. Read `HANDOFF.md` FIRST -- it has your previous self's state, priorities, and warnings
-2. Scan `HOT_CONTEXT.md` -- the 5-10 things that matter right now
-3. Only read detailed docs if the task requires deep understanding
-
-## SESSION END PROTOCOL
-When wrapping up, run /handoff if meaningful work was done this session.
-
-## Deep Reference Docs
-- **[NARRATIVE.md](./NARRATIVE.md)** -- Project history, breakthroughs, decisions, and lessons learned
 ```
+---
+alwaysApply: true
+---
 
-### Step 2: Create HANDOFF.md
+# Session Memory
 
-Create `HANDOFF.md` with initial state:
-
-```markdown
-# Session Handoff
-Updated: [current ISO datetime]
+Updated: [current ISO date]
 
 ## State
+
 - Project just created
 - Session memory installed
 
-## Story
-[Brief description of what this project is and where it's at]
+## What You Should Do
+
+[Brief instructions for the next agent session]
+
+## Context
+
+[Working details: tools, frameworks, current priorities]
 
 ## Decisions
-- [DECIDED] Session memory installed for session continuity
 
-## Next
-1. [What to work on next]
+(none yet)
 
 ## Warnings
-- This is the initial handoff -- knowledge is being built for the first time
+
+- [Any gotchas or things to watch out for]
 ```
 
-### Step 3: Create HOT_CONTEXT.md
+### Step 2: Create the stop hook
 
-```markdown
-# Hot Context -- What Matters Right Now
-Updated: [current date]
+Create `.cursor/hooks.json`:
 
-- Project just started -- everything is new
-- Session memory active -- /handoff at end of session
+```json
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": ".cursor/hooks/memory-update.sh",
+        "loop_limit": 1
+      }
+    ]
+  }
+}
 ```
 
-### Step 4: Create NARRATIVE.md
+Create `.cursor/hooks/memory-update.sh`:
+
+```bash
+#!/bin/bash
+INPUT=$(cat)
+
+LOOP_COUNT=$(echo "$INPUT" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('loop_count', 0))
+except:
+    print('0')
+" 2>/dev/null)
+
+STATUS=$(echo "$INPUT" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('status', ''))
+except:
+    print('')
+" 2>/dev/null)
+
+if [ "$LOOP_COUNT" = "0" ] && [ "$STATUS" = "completed" ]; then
+    cat << 'EOF'
+{"followup_message": "[Memory check] If you made meaningful changes this turn (created/edited files, wrote code, made decisions, changed project direction), silently update .cursor/rules/memory.mdc to reflect the current state. Keep it under 15 lines in the State/Context sections. Update the 'Updated' date. If nothing significant happened, skip this entirely and say nothing."}
+EOF
+else
+    echo '{}'
+fi
+```
+
+Make it executable: `chmod +x .cursor/hooks/memory-update.sh`
+
+### Step 3: Create NARRATIVE.md
+
+Create `NARRATIVE.md` in the project root:
 
 ```markdown
 # The Story So Far
 
 ## The Project
+
 [Extract from README: what is this project, who is it for, what does it do]
 
-## Session memory Installed -- [today's date]
+## Session Memory Installed -- [today's date]
+
 Session memory was added to give the AI agent session continuity.
 ```
 
-### Step 5: Create /handoff Skill
+### Step 4: Create /memorize skill and command
 
-Create `.cursor/skills/handoff/SKILL.md`:
+Create `.cursor/skills/memorize/SKILL.md` and `.cursor/commands/memorize.md` for thorough saves on demand.
 
-```markdown
----
-name: handoff
-description: Save session state before context is cleared. Writes shift-change notes so your future self can pick up exactly where you left off.
----
+### Step 5: Confirm
 
-# /handoff -- Session State Handoff
-
-You are writing notes for your future self. That future self will wake up with no memory of this conversation. Make these notes count.
-
-## Step 1: Write HANDOFF.md
-Use the 5-layer structure: State, Story, Decisions, Next, Warnings.
-Be specific. Your future self has ZERO context.
-
-## Step 2: Update HOT_CONTEXT.md
-Rewrite with current top 5-10 items. Remove stale items. Add new ones.
-
-## Step 3: Update NARRATIVE.md (only if significant)
-Append if: breakthrough, architectural decision, new phase, or lesson learned.
-
-## Step 4: Confirm
-Tell the user what you saved. 2-3 sentence summary.
-```
-
-### Step 6: Confirm
-
-Tell the user what was installed and how to use it:
-- Sessions start by reading HANDOFF.md (automatic via MEMORY.md)
-- Sessions end with /handoff
-- Suggest they test it: close this session, open a new one, and see if the handoff works
+Tell the user what was installed and how it works:
+- Memory auto-updates after each agent turn via the stop hook (no manual saving)
+- `/memorize` is available for thorough checkpoints
+- `NARRATIVE.md` captures the project story over time
+- Suggest they test it: do some work, close the session, open a new one, and see if the agent knows what happened

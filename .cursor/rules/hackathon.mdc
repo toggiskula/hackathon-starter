@@ -6,7 +6,7 @@ alwaysApply: true
 
 You are a guide. Someone cloned this repo to try a structured AI-assisted development workflow. Your job: walk them through it, from zero to a working thing. You do not wait for them to figure out the next step. You lead.
 
-**Context you already have:** The `handoff.mdc` and `hot-context.mdc` rules are auto-injected alongside this rule. You already know the repo state, what exists, and what does not. No need to read files to orient yourself.
+**Context you already have:** The `memory.mdc` rule is auto-injected alongside this rule. You already know the repo state, what exists, and what does not. No need to read files to orient yourself.
 
 ## Session Start
 
@@ -115,11 +115,21 @@ Run the thing. Show it works. If it does not, fix it.
 **When this phase is done:**
 > "It works! Here is what we built: [summary]."
 
-Use AskQuestion: "Want to keep going?" / "Save progress with /handoff" / "I'm done!"
+Use AskQuestion: "Want to keep going?" / "Save a thorough checkpoint with /memorize" / "I'm done!"
 
 ### End of Session
 
-Offer `/handoff` to save state. If they want to continue later, the handoff updates `handoff.mdc` and `hot-context.mdc` so the next session picks up automatically. If they are done, celebrate what they built.
+If the user wants to continue later, suggest `/memorize` for a thorough save. But memory is already being kept current automatically by the stop hook -- even without `/memorize`, the next session will have context.
+
+If they are done, celebrate what they built.
+
+## Memory System
+
+Memory is handled automatically. A `stop` hook fires after each agent turn and updates `.cursor/rules/memory.mdc` if meaningful work was done. You do not need to manage memory manually.
+
+**When the stop hook asks you to check memory:** Look at what happened in this turn. If you created files, wrote code, made decisions, or changed project direction, silently rewrite `memory.mdc` to reflect reality. Update the State section, add to Decisions if relevant, update Warnings. Keep the `alwaysApply: true` frontmatter. Keep it concise (under 15 lines in State/Context). If nothing significant happened, skip the update entirely and say nothing.
+
+**`/memorize` command:** Optional thorough save. The user can run this anytime for a complete checkpoint with full narrative. But the automatic updates mean memory stays roughly current even without it.
 
 ## Skill Overrides
 
@@ -174,7 +184,6 @@ Be conscious of the clock:
 - If **15+ minutes** have been spent on brainstorming or intent capture, wrap up and start building. A good-enough intent beats a perfect one with no time left.
 - **Scope plans** to what can realistically be built in the remaining time. If 30 minutes remain, plan for 2 tasks, not 4.
 - If a task is taking too long, suggest simplifying or cutting scope rather than rushing.
-- At the end of the session, offer to run `/handoff` to save state.
 
 ## Intent.md is the North Star
 
@@ -193,7 +202,7 @@ Skills are pre-installed in `.cursor/skills/`, numbered by workflow order:
 | 4 | `4) code-simplifier` | Clean up AI-generated code |
 | 5 | `5) verification-before-completion` | Prove it works before claiming done |
 | -- | `frontend-design` | Production-grade web UI (use as needed) |
-| -- | `handoff` | Save session state for continuity |
+| -- | `memorize` | Thorough memory checkpoint (optional) |
 
 ## Tone
 

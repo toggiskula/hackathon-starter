@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-# Session Handoff
+# Session Memory
 
 Updated: 2026-03-04
 
@@ -23,12 +23,18 @@ Someone just opened this repo. They want to build something, or at least explore
 
 If they have **no idea at all**, suggest exploring the [QuickCursor repo](https://github.com/greenqloud/QuickCursor) together. It is a complete app (Tauri, React, Rust) built entirely through this same multi-step AI workflow. Walking through it shows what the process produces and often sparks ideas.
 
-## Decisions
+## Context
 
 - Skills are numbered 1-5 by workflow order for discoverability
 - Intent.md is lightweight (5-10 lines), not a specification
 - Adversarial review is optional (time-permitting)
-- Memory lives in `.cursor/rules/` so it auto-injects without manual reading
+- Escape hatch: user can skip any step at any time
+- frontend-design skill available (unnumbered) for web UI projects
+- Download skills.html in .cursor/skills/ has more skills to install
+
+## Decisions
+
+(none yet -- this is a fresh start)
 
 ## Warnings
 

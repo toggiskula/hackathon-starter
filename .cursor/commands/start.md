@@ -1,6 +1,6 @@
 Greet the user and start the onboarding flow.
 
-Someone just opened this repo. The handoff.mdc and hot-context.mdc rules are already injected -- you know the repo state.
+Someone just opened this repo. The memory.mdc rule is already injected -- you know the repo state.
 
 Your job:
 

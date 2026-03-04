@@ -32,5 +32,5 @@ during the build. The app works.
 ## What Happens Next
 
 You open this repo, say hello (or type /start), and the agent picks up from here.
-Build something. At the end, /handoff saves the session state so you or someone else
-can continue later.
+Build something. Memory auto-updates as you work, so you or someone else can continue
+later without losing context.
