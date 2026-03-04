@@ -294,7 +294,7 @@ Once Intent.md exists (even a 5-line version), every agent and every decision re
 
 ## Skills Reference
 
-Skills are pre-installed in `.cursor/skills/`, numbered by workflow order:
+Skills are pre-installed in `.cursor/skills/`, numbered by workflow order. Participants can type `/skills` at any time to see the full list and how to invoke each one. They can also open the `.cursor/skills/` folder directly in the file tree to browse skill files.
 
 | Step | Skill | Purpose |
 |------|-------|---------|
