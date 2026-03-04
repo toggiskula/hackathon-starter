@@ -91,7 +91,7 @@ Branch on the selected `id` from the opening AskQuestion:
 **no_idea:**
 Start a conversation. One question at a time. Focus on what interests *them* -- what problems they run into, what would be fun to make, what they have always wanted to try. Use AskQuestion to offer categories when it helps narrow things down, but keep it conversational -- do not make it feel like a form.
 
-If they are truly stuck, tell them about **QuickCursor** -- a macOS desktop overlay (clipboard history + AI text tools) built entirely through this same workflow in ~3 hours. It's a real, working app (~37 files, Tauri + React + Rust) that started with nothing but a vague idea. The repo is at [github.com/greenqloud/QuickCursor](https://github.com/greenqloud/QuickCursor) and they can browse it themselves. Walking through code that AI generated often sparks "I want to build something like X but for Y."
+If they are truly stuck, tell them about **QuickCursor** -- a macOS desktop app that wraps the Cursor CLI agent in a Spotlight-style floating panel with persistent memory. Press Cmd+Shift+R from anywhere, type a prompt, get streaming AI responses, and the agent builds a knowledge base over time. Built with Tauri v2, React, and Rust. Started from nothing and went through the full workflow: brainstorming, intent engineering, adversarial review, subagent-driven development. The repo is at [github.com/greenqloud/QuickCursor](https://github.com/greenqloud/QuickCursor) -- they can browse it themselves. Seeing what AI-directed development produces often sparks "I want to build something like X but for Y."
 
 **rough_idea:**
 Ask 2-3 questions to sharpen it (use AskQuestion for structured choices, open-ended for nuance). What is the core thing it does? Who would use it? What would make it satisfying to build? Then write a lightweight Intent.md.
@@ -102,11 +102,13 @@ Skip straight to planning and building. Auto-generate an Intent.md from what the
 **explore:**
 Walk them through what this workflow actually produced. The best example is **QuickCursor** -- a macOS desktop app built entirely through this same multi-step AI-assisted process.
 
-**What QuickCursor is:** A lightweight macOS clipboard and text tool -- a floating overlay (Cmd+Shift+V) that lets you paste from a history of recent clipboard items, transform text with AI, and manage snippets. Built with Tauri v2, React, and Rust. ~37 files, ~3 hours of AI-assisted development.
+**What QuickCursor is:** A macOS desktop app that wraps the Cursor CLI agent (`cursor-agent`) in a Spotlight-style floating panel. Press Cmd+Shift+R from anywhere on the Mac, type a prompt, and get streaming AI responses. The agent operates on a markdown knowledge vault -- it reads `.cursor/rules/` for behavior and writes memories as markdown files. The vault is Obsidian-compatible. This is basically a headless Cursor with a built-in knowledge base.
 
-**The build story:** Started with a vague idea ("I want a smarter clipboard tool"). Went through brainstorming, intent engineering, adversarial review, subagent-driven development, and verification. The AI wrote the majority of the code. The developer directed the process.
+**Tech stack:** Tauri v2 (Rust backend), React + Tailwind CSS frontend, cursor-agent CLI as the AI brain.
 
-You can download a build here: https://netapp-my.sharepoint.com/:u:/p/toggi/IQBD9T6dt3_FTJFH4LCMd1sPAV1utleHI0F74E77Sr5rGAQ?e=HNRn9w
+**The build story:** Started with a vague idea ("I want a quick AI interface from anywhere on the Mac"). Went through brainstorming, intent engineering, adversarial review (which changed the design significantly -- from a Spotlight modal to a pinnable panel, from auto-clipboard to opt-in, stripped the memory schema to just markdown files), then subagent-driven development and verification. The AI wrote the majority of the code; the developer directed the process.
+
+**Download:** https://netapp-my.sharepoint.com/:u:/p/toggi/IQBD9T6dt3_FTJFH4LCMd1sPAV1utleHI0F74E77Sr5rGAQ?e=HNRn9w
 
 The repo is at [github.com/greenqloud/QuickCursor](https://github.com/greenqloud/QuickCursor) (participants can browse it directly). Note: you as the agent cannot browse it directly if SSO is in the way -- but you know the story above. Share it with context.
 
