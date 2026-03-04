@@ -1,13 +1,13 @@
 ---
-name: memory-v3-setup
-description: Install Memory V3 -- a session-continuity system for AI coding agents. Creates handoff files, hooks, and skills so the agent remembers what happened between sessions.
+name: session-memory
+description: Install session memory -- a lightweight continuity system so the agent remembers what happened between sessions. Creates handoff files and working memory with zero dependencies.
 ---
 
-# Memory V3 Setup -- Agent Session Continuity System
+# Session Memory Setup
 
-You are installing Memory V3 into this codebase. Memory V3 solves the "amnesia problem" -- AI agents lose all context between sessions. V3 gives you: shift-change notes, working memory, narrative history, and a Stop hook that reminds you to save state before context is cleared.
+You are installing session memory into this codebase. This solves the "amnesia problem" -- AI agents lose all context between sessions. Session memory gives you: shift-change notes, working memory, narrative history, and a Stop hook that reminds you to save state before context is cleared.
 
-**Analogy for the user:** Imagine hiring someone who gets amnesia every night. Every morning they show up to your workshop with zero memory of yesterday. Memory V3 is the set of notes their yesterday-self leaves them so they can start working immediately instead of spending the first hour asking "what was I doing?"
+**Analogy for the user:** Imagine hiring someone who gets amnesia every night. Every morning they show up to your workshop with zero memory of yesterday. Session memory is the set of notes their yesterday-self leaves them so they can start working immediately instead of spending the first hour asking "what was I doing?"
 
 ---
 
@@ -30,7 +30,7 @@ You are installing Memory V3 into this codebase. Memory V3 solves the "amnesia p
 Create `MEMORY.md` in the project root:
 
 ```markdown
-# [Project Name] -- Memory V3
+# [Project Name] -- Session memory
 
 ## SESSION START PROTOCOL
 1. Read `HANDOFF.md` FIRST -- it has your previous self's state, priorities, and warnings
@@ -54,13 +54,13 @@ Updated: [current ISO datetime]
 
 ## State
 - Project just created
-- Memory V3 installed
+- Session memory installed
 
 ## Story
 [Brief description of what this project is and where it's at]
 
 ## Decisions
-- [DECIDED] Memory V3 installed for session continuity
+- [DECIDED] Session memory installed for session continuity
 
 ## Next
 1. [What to work on next]
@@ -76,7 +76,7 @@ Updated: [current ISO datetime]
 Updated: [current date]
 
 - Project just started -- everything is new
-- Memory V3 active -- /handoff at end of session
+- Session memory active -- /handoff at end of session
 ```
 
 ### Step 4: Create NARRATIVE.md
@@ -87,8 +87,8 @@ Updated: [current date]
 ## The Project
 [Extract from README: what is this project, who is it for, what does it do]
 
-## Memory V3 Installed -- [today's date]
-Memory V3 was added to give the AI agent session continuity.
+## Session memory Installed -- [today's date]
+Session memory was added to give the AI agent session continuity.
 ```
 
 ### Step 5: Create /handoff Skill
