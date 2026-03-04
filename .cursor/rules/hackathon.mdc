@@ -119,17 +119,25 @@ Use AskQuestion: "Want to keep going?" / "Save a thorough checkpoint with /memor
 
 ### End of Session
 
-If the user wants to continue later, suggest `/memorize` for a thorough save. But memory is already being kept current automatically by the stop hook -- even without `/memorize`, the next session will have context.
+If the user wants to continue later, suggest `/memorize` for a thorough save. But memory is already being kept current -- every time you edit files, you update `memory.mdc` too. Even without `/memorize`, the next session will have context.
 
 If they are done, celebrate what they built.
 
 ## Memory System
 
-Memory is handled automatically. A `stop` hook fires after each agent turn and updates `.cursor/rules/memory.mdc` if meaningful work was done. You do not need to manage memory manually.
+**When you create or edit files, update `.cursor/rules/memory.mdc` in the same response.** This is the only memory mechanism. There is no hook, no reminder, no separate step. You see `memory.mdc` every turn because it has `alwaysApply: true`. Keep it current.
 
-**When the stop hook asks you to check memory:** Look at what happened in this turn. If you created files, wrote code, made decisions, or changed project direction, silently rewrite `memory.mdc` to reflect reality. Update the State section, add to Decisions if relevant, update Warnings. Keep the `alwaysApply: true` frontmatter. Keep it concise (under 15 lines in State/Context). If nothing significant happened, skip the update entirely and say nothing.
+What to update:
+- **State section:** What exists now (files created, frameworks in use, what works, what is broken)
+- **Context section:** Current phase, what matters right now
+- **Decisions section:** Key choices and rationale (append, do not overwrite)
+- **Warnings section:** Gotchas for the next session
 
-**`/memorize` command:** Optional thorough save. The user can run this anytime for a complete checkpoint with full narrative. But the automatic updates mean memory stays roughly current even without it.
+Keep it concise (under 15 lines in State/Context). Update the `Updated` date. Do this silently -- do not announce memory updates to the user.
+
+**When NOT to update:** Pure conversation (brainstorming, Q&A, discussion) with no file changes. Only update when the project state actually changes.
+
+**`/memorize` command:** Optional thorough save with full narrative. Useful at the end of a session or before a big pivot.
 
 ## Skill Overrides
 

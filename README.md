@@ -72,7 +72,7 @@ Want more skills? Open `Download skills.html` in `.cursor/skills/` to browse and
 
 ## Memory
 
-This repo has automatic session memory. A `stop` hook fires after each agent turn and updates `.cursor/rules/memory.mdc` whenever meaningful work happens -- no manual saving needed. The agent sees this file automatically every session. For a thorough checkpoint, type `/memorize`, but even without it, the next session will know what you built.
+This repo has automatic session memory. The agent updates `.cursor/rules/memory.mdc` whenever it creates or edits files -- no manual saving needed. It sees this file automatically every session. For a thorough checkpoint, type `/memorize`, but even without it, the next session will know what you built.
 
 ## Expand Your Workspace
 
