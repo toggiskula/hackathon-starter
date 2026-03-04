@@ -147,48 +147,57 @@ Capture the vision in 5-10 lines. What is this, why does it matter, constraints 
 }
 ```
 
-**When this phase is done** (Intent.md is confirmed):
+**When this phase is done** (Intent.md is confirmed): immediately write the plan. Do not ask -- just do it:
+> "Intent is locked. Writing the implementation plan now."
 
-If the project is complex and 30+ minutes remain, offer adversarial review:
+Transition directly to Phase 3.
+
+### Phase 3: Write Plan (skill: `writing-plans` from superpowers)
+
+Write a concrete implementation plan from Intent.md. Hackathon overrides:
+- **2-4 tasks max** -- scoped to what can be built in the time remaining
+- **Save to `docs/plans/YYYY-MM-DD-<feature>.md`**
+- Each task has: what to build, exact files to create/modify, how to verify it works
+- Skip the TDD step structure if the project is a prototype -- just describe what to build and how to test it manually
+- Do NOT propose 3 execution approaches -- in hackathon context, always use subagent-driven (in this session)
+
+**When the plan is written:** immediately call AskQuestion -- do NOT stop:
 
 ```json
 {
   "questions": [{
-    "id": "adversarial",
-    "prompt": "Before we start building, we could stress-test this design -- three hostile AI reviewers look for flaws. Takes about 10 minutes.",
+    "id": "after_plan",
+    "prompt": "Plan written and saved. Want to stress-test it with 3 hostile reviewers before building? (Optional -- takes ~10 min, catches real bugs)",
     "options": [
-      { "id": "attack", "label": "Yes, attack my design" },
-      { "id": "skip", "label": "Skip it, let's build" }
+      { "id": "attack", "label": "Yes -- attack the plan" },
+      { "id": "build", "label": "Skip it, let's build" }
     ]
   }]
 }
 ```
 
-Otherwise, transition directly to Phase 3:
-> "Intent is locked. Let me break this into tasks and we can start building."
+### Phase 3b: Adversarial Review (skill: `2) adversarial-review`) -- OPTIONAL
 
-### Phase 2b: Adversarial Review (skill: `2) adversarial-review`) -- OPTIONAL
+Only if the user opted in. Three hostile reviewers attack the **plan** (not just the design). Synthesize findings and update `docs/plans/` accordingly.
 
-Only if the user opted in. Three hostile reviewers attack the design. Synthesize findings and update the plan accordingly.
-
-**When this phase is done:** Summarize findings, then immediately call AskQuestion to drive to Phase 3. Do NOT stop and wait:
+**When this phase is done:** Summarize findings, then immediately call AskQuestion. Do NOT stop:
 
 ```json
 {
   "questions": [{
     "id": "after_adversarial",
-    "prompt": "The reviewers found [N] issues. Here's what I'd change in the plan: [...]. Ready to move to Phase 3 and start building?",
+    "prompt": "The reviewers found [N] issues. Here's what I'd change in the plan: [...]. Ready to build?",
     "options": [
       { "id": "build", "label": "Yes, let's build" },
-      { "id": "revise", "label": "Revise Intent.md first" }
+      { "id": "revise", "label": "Revise the plan first" }
     ]
   }]
 }
 ```
 
-### Phase 3: Plan + Build (skill: `3) subagent-driven-development`)
+### Phase 4: Build (skill: `3) subagent-driven-development`)
 
-Break Intent.md into 2-4 concrete tasks. Use **TodoWrite** to create a visible progress tracker so the user can see where they are in the build. Dispatch subagents to implement each one. After each task: spec compliance review, then code quality review. Fix issues before moving to the next task.
+Execute the plan from `docs/plans/`. Use **TodoWrite** to create a visible progress tracker. Dispatch subagents to implement each task. After each task: spec compliance review, then code quality review. Fix issues before moving to the next task.
 
 **After each task completes, update the todo and nudge:**
 > "Task [N] is done and reviewed. [brief summary of what was built]. Moving on to task [N+1]: [description]."
@@ -196,14 +205,14 @@ Break Intent.md into 2-4 concrete tasks. Use **TodoWrite** to create a visible p
 **When all tasks are done:**
 > "All tasks are built and reviewed. Let me do a quick cleanup pass on the code."
 
-### Phase 4: Polish (skill: `4) code-simplifier`)
+### Phase 5: Polish (skill: `4) code-simplifier`)
 
 Clean up AI-generated code. Simplify, remove redundancy, improve naming.
 
 **When this phase is done:**
 > "Code is cleaned up. Let me verify everything actually works."
 
-### Phase 5: Verify (skill: `5) verification-before-completion`)
+### Phase 6: Verify (skill: `5) verification-before-completion`)
 
 Run the thing. Show it works. If it does not, fix it.
 
@@ -273,6 +282,15 @@ Keep it concise (under 15 lines in State/Context). Update the `Updated` date. Do
 - **KEEP** location: `Intent.md` in project root.
 - **KEEP** user confirmation before proceeding.
 
+### Writing Plans (`superpowers:writing-plans`)
+
+- **OVERRIDE** task count: 2-4 tasks max. Scope to remaining time.
+- **OVERRIDE** save location: `docs/plans/YYYY-MM-DD-<feature>.md` (same as the skill specifies).
+- **SKIP** TDD step structure (write failing test → run → implement → pass → commit) for prototype projects. Replace with: what to build, exact files to create/modify, and how to manually verify it works.
+- **SKIP** the execution choice at the end ("subagent this session vs parallel session"). Always use subagent-driven in this session.
+- **KEEP** the plan header format (Goal, Architecture, Tech Stack).
+- **KEEP** exact file paths and complete descriptions for each task.
+
 ### Subagent-Driven Development (`3) subagent-driven-development/SKILL.md`)
 
 - **OVERRIDE** plan size: 2-4 tasks maximum. Scope to what can be built in remaining time.
@@ -310,14 +328,15 @@ Once Intent.md exists (even a 5-line version), every agent and every decision re
 
 Skills are pre-installed in `.cursor/skills/`, numbered by workflow order. Participants can type `/skills` at any time to see the full list and how to invoke each one. They can also open the `.cursor/skills/` folder directly in the file tree to browse skill files.
 
-| Step | Skill | Purpose |
+| Step | Folder in `.cursor/skills/` | Purpose |
 |------|-------|---------|
 | 1 | `1) brainstorming` | Shape the idea through conversation |
 | 1 | `1) intent-engineering` | Capture vision as Intent.md |
-| 2 | `2) adversarial-review` | Stress-test the design (optional) |
-| 3 | `3) subagent-driven-development` | Build with parallel agents + review |
-| 4 | `4) code-simplifier` | Clean up AI-generated code |
-| 5 | `5) verification-before-completion` | Prove it works before claiming done |
+| 2 | `writing-plans` (superpowers skill) | Write a concrete 2-4 task implementation plan |
+| 3 | `2) adversarial-review` | Stress-test the plan (optional) |
+| 4 | `3) subagent-driven-development` | Build with parallel agents + review |
+| 5 | `4) code-simplifier` | Clean up AI-generated code |
+| 6 | `5) verification-before-completion` | Prove it works before claiming done |
 | -- | `frontend-design` | Production-grade web UI (use as needed) |
 | -- | `memorize` | Thorough memory checkpoint (optional) |
 
